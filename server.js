@@ -28,12 +28,12 @@ const app = express();
 //console.log(`express: ${express}`)
 
 //comment the following for localhost testing
-//app.use(requireHTTPS);
+app.use(requireHTTPS);
 
-app.use(express.static('./dist'));
+app.use(express.static('./dist/pokEvolution'));
 
 app.get('/*', (req, res) =>
-  res.sendFile('index.html', {root: 'dist/es/'}),
+  res.sendFile('index.html', {root: 'dist/pokEvolution/'}),
 );
 
 console.log(`progressing`)
