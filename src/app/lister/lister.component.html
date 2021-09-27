@@ -1,0 +1,23 @@
+<h1>Pokemon lister</h1>
+<div><button *ngIf="this.previous" (click)="previousPage()"> < previous </button></div>
+<div>total: {{this.count}}</div>
+<div><button *ngIf="this.next" (click)="nextPage()"> next > </button></div>
+<ul>
+  <li *ngFor="let pokemon of this.pokemonList; let i=index">
+    <a href="#" (click)="viewDetails(pokemon['id'], i)">{{pokemon['name']}}</a>
+    <div *ngIf="pokemon['artUrl'] && this.currentIndex === i">
+      <img [src]="pokemon['artUrl']" alt="{{pokemon['name'] + ' image'}}" height="150px">
+    </div>
+    <ul *ngIf="pokemon['evolutionChain'] && this.currentIndex === i">
+      <li *ngFor="let chain of pokemon['evolutionChain']; let j=index">
+        <a href="#" *ngIf="chain['name']!==pokemon['name']" (click)="viewChain(chain)">{{chain['name']}}</a>
+        <div *ngIf="chain['name']!==pokemon['name'] && chain['pokemon']">
+          <div *ngIf="chain['pokemon']['artUrl']">
+            <img [src]="chain['pokemon']['artUrl']" alt="{{chain['pokemon']['name'] + ' image'}}" height="100px">
+          </div>
+        </div>
+        <div *ngIf="chain['name']===pokemon['name']">{{chain['name']}}</div>
+      </li>
+    </ul>
+  </li>
+</ul>
