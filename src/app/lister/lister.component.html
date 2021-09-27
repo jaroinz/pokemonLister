@@ -5,18 +5,19 @@
 <ul>
   <li *ngFor="let pokemon of this.pokemonList; let i=index">
     <a href="#" (click)="viewDetails(pokemon['id'], i)">{{pokemon['name']}}</a>
-    <div *ngIf="pokemon['artUrl'] && this.currentIndex === i">
+    <div *ngIf="pokemon['artUrl'] && this.currentDetailsView === i">
       <img [src]="pokemon['artUrl']" alt="{{pokemon['name'] + ' image'}}" height="150px">
     </div>
-    <ul *ngIf="pokemon['evolutionChain'] && this.currentIndex === i">
+    <ul *ngIf="pokemon['evolutionChain'] && this.currentDetailsView === i">
+      <span>Possible evolutions for {{pokemon['name']}}</span>
       <li *ngFor="let chain of pokemon['evolutionChain']; let j=index">
-        <a href="#" *ngIf="chain['name']!==pokemon['name']" (click)="viewChain(chain)">{{chain['name']}}</a>
-        <div *ngIf="chain['name']!==pokemon['name'] && chain['pokemon']">
+        <a href="#" *ngIf="chain['name']!==pokemon['name']" (click)="viewChain(chain, j)">{{chain['name']}}</a>
+        <div *ngIf="chain['name']!==pokemon['name'] && chain['pokemon'] && this.currentEvolutionView === j">
           <div *ngIf="chain['pokemon']['artUrl']">
             <img [src]="chain['pokemon']['artUrl']" alt="{{chain['pokemon']['name'] + ' image'}}" height="100px">
           </div>
         </div>
-        <div *ngIf="chain['name']===pokemon['name']">{{chain['name']}}</div>
+        <div *ngIf="chain['name']===pokemon['name']">{{chain['name']}}'s current state</div>
       </li>
     </ul>
   </li>
