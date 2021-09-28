@@ -1,9 +1,7 @@
-<h1>Pokemon lister</h1>
-
 <div class="container" fxLayout="row">
-  <div fxFlex="33%" *ngIf="this.previous" ><button mat-flat-button color="primary" (click)="previousPage()"> < previous </button></div>
-  <div fxFlex="33%">total: {{this.count}}</div>
-  <div fxFlex="33%" *ngIf="this.next" ><button mat-flat-button color="primary" (click)="nextPage()"> next > </button></div>
+  <div fxFlex="33%" ><button [disabled]="!this.previous" mat-flat-button color="primary" (click)="previousPage()"> < previous </button></div>
+  <div fxFlex="33%" class="currentCounter">{{this.currentCount}} of: {{this.count}} records</div>
+  <div fxFlex="33%" ><button [disabled]="!this.next" mat-flat-button color="primary" (click)="nextPage()"> next > </button></div>
 </div>
 
 <mat-accordion>

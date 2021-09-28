@@ -26,7 +26,7 @@ import {MatButtonModule} from "@angular/material/button";
     FlexLayoutModule,
     MatButtonModule
   ],
-  providers: [],
+  providers: [HttpClientModule],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
