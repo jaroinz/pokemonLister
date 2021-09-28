@@ -16,7 +16,8 @@ export class ListerComponent implements OnInit {
 
   evolutionChain: any[] =[];
 
-  count = '';
+  currentCount: number = 0 ;
+  count: number = 0;
   next: any;
   previous: any;
 
@@ -26,6 +27,7 @@ export class ListerComponent implements OnInit {
       result => {
         if (result) {
           this.loader(result);
+          this.currentCount = 20;
         }
       });
   }
@@ -37,6 +39,7 @@ export class ListerComponent implements OnInit {
         result => {
           if (result) {
             this.loader(result);
+            this.currentCount += 20;
           }
         }
       )
@@ -50,6 +53,7 @@ export class ListerComponent implements OnInit {
         result => {
           if (result) {
             this.loader(result);
+            this.currentCount -= 20;
           }
         }
       )
@@ -148,15 +152,10 @@ export class ListerComponent implements OnInit {
   }
 
   private loader(result: any) {
-    if (result.count) {
-      this.count = result.count;
-    }
-    if (result.next) {
-      this.next = result.next
-    }
-    if (result.previous) {
-      this.previous = result.previous
-    }
+    this.count = result.count;
+    this.next = result.next
+    this.previous = result.previous
+
     if (result.results?.length > 0) {
       for (const pokemon of result.results) {
         const tokens = pokemon.url.split('/');

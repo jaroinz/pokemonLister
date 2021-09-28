@@ -16,16 +16,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'pokEvolution'`, () => {
+  it(`should have as title 'Pokemon lister'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('pokEvolution');
+    expect(app.title).toEqual('Pokemon lister');
   });
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain('pokEvolution app is running!');
+    expect(compiled.querySelector('span')?.textContent).toContain('Pokemon lister app is running!');
   });
 });
