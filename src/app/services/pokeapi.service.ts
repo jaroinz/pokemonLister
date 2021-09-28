@@ -13,9 +13,6 @@ export class PokeapiService {
 
   apiURL = 'https://pokeapi.co/api/v2';
 
-  offsetDefault = 20;
-  limit = 20;
-
   constructor(private http: HttpClient) { }
 
   listPokemon(next: any, previous: any): Observable<any>
