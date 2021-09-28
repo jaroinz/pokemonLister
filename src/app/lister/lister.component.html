@@ -1,24 +1,37 @@
 <h1>Pokemon lister</h1>
-<div><button *ngIf="this.previous" (click)="previousPage()"> < previous </button></div>
-<div>total: {{this.count}}</div>
-<div><button *ngIf="this.next" (click)="nextPage()"> next > </button></div>
-<ul>
-  <li *ngFor="let pokemon of this.pokemonList; let i=index">
-    <a href="#" (click)="viewDetails(pokemon['id'], i)">{{pokemon['name']}}</a>
-    <div *ngIf="pokemon['artUrl'] && this.currentDetailsView === i">
-      <img [src]="pokemon['artUrl']" alt="{{pokemon['name'] + ' image'}}" height="150px">
+
+<div class="container" fxLayout="row">
+  <div fxFlex="33%" *ngIf="this.previous" ><button mat-flat-button color="primary" (click)="previousPage()"> < previous </button></div>
+  <div fxFlex="33%">total: {{this.count}}</div>
+  <div fxFlex="33%" *ngIf="this.next" ><button mat-flat-button color="primary" (click)="nextPage()"> next > </button></div>
+</div>
+
+<mat-accordion>
+  <mat-expansion-panel *ngFor="let pokemon of this.pokemonList; let i=index"
+                       (opened)="viewDetails(pokemon['id'], i)">
+    <mat-expansion-panel-header>
+      <h2>{{pokemon['name']}}</h2>
+    </mat-expansion-panel-header>
+    <div class="container" fxLayout="row">
+      <div fxFlex="30%" *ngIf="pokemon['artUrl']">
+        <img [src]="pokemon['artUrl']" alt="{{pokemon['name'] + ' image'}}" height="150px">
+      </div>
+      <div>
+        <p>Possible evolutions for {{pokemon['name']}}</p>
+        <mat-accordion *ngIf="pokemon['evolutionChain']">
+          <mat-expansion-panel *ngFor="let chain of pokemon['evolutionChain']; let j=index" (opened)="viewChain(chain)">
+            <mat-expansion-panel-header>
+              <h3>{{chain['name']}} <span *ngIf="chain['name']===pokemon['name']">(current state)</span></h3>
+            </mat-expansion-panel-header>
+            <div *ngIf="chain['pokemon']">
+              <div *ngIf="chain['pokemon']['artUrl']">
+                <img [src]="chain['pokemon']['artUrl']" alt="{{chain['pokemon']['name'] + ' image'}}" height="100px">
+              </div>
+            </div>
+
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
     </div>
-    <ul *ngIf="pokemon['evolutionChain'] && this.currentDetailsView === i">
-      <span>Possible evolutions for {{pokemon['name']}}</span>
-      <li *ngFor="let chain of pokemon['evolutionChain']; let j=index">
-        <a href="#" *ngIf="chain['name']!==pokemon['name']" (click)="viewChain(chain, j)">{{chain['name']}}</a>
-        <div *ngIf="chain['name']!==pokemon['name'] && chain['pokemon'] && this.currentEvolutionView === j">
-          <div *ngIf="chain['pokemon']['artUrl']">
-            <img [src]="chain['pokemon']['artUrl']" alt="{{chain['pokemon']['name'] + ' image'}}" height="100px">
-          </div>
-        </div>
-        <div *ngIf="chain['name']===pokemon['name']">{{chain['name']}}'s current state</div>
-      </li>
-    </ul>
-  </li>
-</ul>
+  </mat-expansion-panel>
+</mat-accordion>

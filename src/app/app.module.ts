@@ -6,6 +6,10 @@ import {RouterModule} from "@angular/router";
 import { ListerComponent } from './lister/lister.component';
 import { AppRoutingModule } from './app-routing.module';
 import {HttpClientModule} from "@angular/common/http";
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {MatExpansionModule} from "@angular/material/expansion";
+import {FlexLayoutModule} from "@angular/flex-layout";
+import {MatButtonModule} from "@angular/material/button";
 
 @NgModule({
   declarations: [
@@ -16,7 +20,11 @@ import {HttpClientModule} from "@angular/common/http";
     BrowserModule,
     RouterModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    BrowserAnimationsModule,
+    MatExpansionModule,
+    FlexLayoutModule,
+    MatButtonModule
   ],
   providers: [],
   bootstrap: [AppComponent]
