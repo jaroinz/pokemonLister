@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {PokeapiService} from "../services/pokeapi.service";
 import {Pokemon} from "../models/pokemon";
-import {Chain} from "../models/chain";
+import {Link} from "../models/link";
 
 @Component({
   selector: 'app-lister',
@@ -14,20 +14,22 @@ export class ListerComponent implements OnInit {
 
   pokemonList: Pokemon[] = [];
 
-  evolutionChain: any[] =[];
+  evolutionLinks: any[] =[];
 
   currentCount: number = 0 ;
   count: number = 0;
   next: any;
   previous: any;
 
+  OFFSET = 20;
+
   ngOnInit(): void {
 
-    this.pokeService.listPokemon(null, null).subscribe(
+    this.pokeService.retrieveListPokemon(null, null).subscribe(
       result => {
         if (result) {
           this.loader(result);
-          this.currentCount = 20;
+          this.currentCount = this.OFFSET;
         }
       });
   }
@@ -35,11 +37,11 @@ export class ListerComponent implements OnInit {
   nextPage() {
     if (this.next) {
       this.pokemonList = [];
-      this.pokeService.listPokemon(this.next, null).subscribe(
+      this.pokeService.retrieveListPokemon(this.next, null).subscribe(
         result => {
           if (result) {
             this.loader(result);
-            this.currentCount += 20;
+            this.currentCount += this.OFFSET;
           }
         }
       )
@@ -49,109 +51,124 @@ export class ListerComponent implements OnInit {
   previousPage() {
     if (this.previous) {
       this.pokemonList = [];
-      this.pokeService.listPokemon(null,this.previous).subscribe(
+      this.pokeService.retrieveListPokemon(null,this.previous).subscribe(
         result => {
           if (result) {
             this.loader(result);
-            this.currentCount -= 20;
+            this.currentCount -= this.OFFSET;
           }
         }
       )
     }
   }
 
-  viewDetails(pokeId: string, index: number) {
-    this.pokeService.viewPokemon(pokeId).subscribe(
+  async viewDetails(pokeId: string, index: number) {
+    const pokemonDetail = this.pokemonList[index];
+    await this.pokeService.retrievePokemon(pokeId).toPromise().then(
       result => {
         if (result) {
-          const pokemonDetail = this.pokemonList[index];
           pokemonDetail.speciesUrl = result.species?.url;
           pokemonDetail.speciesName = result.species?.name;
           pokemonDetail.artUrl = result.sprites?.other?.dream_world?.front_default;
-
-          if (pokemonDetail.speciesUrl) {
-            this.loadEvolution(pokemonDetail);
-          }
         }
       })
+    if (pokemonDetail.speciesUrl) {
+      await this.loadSpecies(pokemonDetail);
+    }
+    else {
+      console.log('no speciesUrl', pokemonDetail.speciesUrl);
+    }
   }
 
-  viewChain(chain: Chain) {
-    const tokens = chain.url.split('/');
+  async viewEvolved(link: Link) {
+    const tokens = link.url.split('/');
     const pokemonId = tokens?.[6];
     for (const pokemon of this.pokemonList) {
       if (pokemon.id === pokemonId) {
-        chain.pokemon = pokemon;
+        link.pokemon = pokemon;
         break;
       }
     }
-    if (!chain.pokemon || !chain.pokemon.artUrl) {
-      this.pokeService.viewPokemon(pokemonId).subscribe(
+    if (!link.pokemon || !link.pokemon.artUrl) {
+      this.pokeService.retrievePokemon(pokemonId).subscribe(
         result => {
           if (result) {
-            chain.pokemon.speciesUrl = result.species?.url;
-            chain.pokemon.speciesName = result.species?.name;
-            chain.pokemon.artUrl = result.sprites?.other?.dream_world?.front_default;
-            this.loadEvolution(chain.pokemon);
+            link.pokemon.speciesUrl = result.species?.url;
+            link.pokemon.speciesName = result.species?.name;
+            link.pokemon.artUrl = result.sprites?.other?.dream_world?.front_default;
+            this.loadSpecies(link.pokemon);
           }
         })
     }
   }
 
-  // ========== private functions ===========
+  async loadSpecies(pokemonDetail: Pokemon) {
+    let speciesEvolutionLinkUrl = '';
 
-  private loadEvolution(pokemonDetail: Pokemon) {
-    this.pokeService.viewSpecies(pokemonDetail.speciesUrl).subscribe(
+    await this.pokeService.retrieveSpecies(pokemonDetail.speciesUrl).toPromise().then(
       speciesResult => {
         if (speciesResult) {
-
-          const tokens = speciesResult.evolution_chain?.url.split('/');
-          const chainId = tokens?.[6];
-
-          if(chainId) {
-
-            if (this.evolutionChain[chainId]) {
-              pokemonDetail.evolutionChain = this.evolutionChain[chainId];
-            }
-            else {
-              if (speciesResult.evolution_chain?.url) {
-
-                this.pokeService.viewEvolution(speciesResult.evolution_chain.url).subscribe(
-                  evolutionResult => {
-                    if (evolutionResult) {
-                      this.evolutionChain[chainId] = [];
-                      const chain = new Chain();
-                      chain.name = evolutionResult.chain?.species?.name;
-                      chain.url = evolutionResult.chain?.species?.url;
-                      this.evolutionChain[chainId].push(chain);
-
-                      if (evolutionResult.chain?.evolves_to) {
-                        this.loadChains(chainId, evolutionResult.chain.evolves_to);
-                      }
-                      pokemonDetail.evolutionChain = this.evolutionChain[chainId];
-                    }
-                  })
-              }
-            }
-          }
+          speciesEvolutionLinkUrl = speciesResult.evolution_chain?.url;
         }
-      })
-  }
+      });
 
-  private loadChains(chainId: any, evolvesTo: any) {
-    for (const evolve of evolvesTo) {
-      const chain = new Chain();
-      chain.name = evolve?.species?.name;
-      chain.url = evolve?.species?.url;
-      this.evolutionChain[chainId].push(chain);
+    const tokens = speciesEvolutionLinkUrl.split('/');
+    const linkId : number = +tokens?.[6];
 
-      if (evolvesTo?.length > 0 && evolvesTo[0].evolves_to) {
-        this.loadChains(chainId, evolvesTo[0].evolves_to);
+    if(linkId) {
+      if (this.evolutionLinks[linkId]) {
+        pokemonDetail.evolutionLinks = this.evolutionLinks[linkId];
+      }
+      else {
+        if (speciesEvolutionLinkUrl) {
+          await this.loadEvolution(pokemonDetail, linkId, speciesEvolutionLinkUrl);
+        }
       }
     }
   }
 
-  private loader(result: any) {
+  async loadEvolution(pokemonDetail: Pokemon, linkId: number, speciesEvolutionLinkUrl: string) {
+    let evolutionLinkEvolvesTo = null;
+    let found = false;
+
+    await this.pokeService.retrieveEvolution(speciesEvolutionLinkUrl).toPromise().then(
+      evolutionResult => {
+        if (evolutionResult) {
+          this.evolutionLinks[linkId] = [];
+          const link = new Link();
+          link.name = evolutionResult.chain?.species?.name;
+          link.url = evolutionResult.chain?.species?.url;
+          this.evolutionLinks[linkId].push(link);
+
+          if (evolutionResult.chain?.evolves_to) {
+            evolutionLinkEvolvesTo = evolutionResult.chain?.evolves_to;
+          }
+          found = true;
+        }
+      });
+    if (evolutionLinkEvolvesTo) {
+      this.loadLinks(linkId, evolutionLinkEvolvesTo);
+    }
+    if (found) {
+      //assign evolution link
+      pokemonDetail.evolutionLinks = this.evolutionLinks[linkId];
+    }
+  }
+
+  loadLinks(linkId: any, evolvesTo: any) {
+    for (const evolve of evolvesTo) {
+      const link = new Link();
+      link.name = evolve?.species?.name;
+      link.url = evolve?.species?.url;
+      this.evolutionLinks[linkId].push(link);
+
+      if (evolvesTo?.length > 0 && evolvesTo[0].evolves_to) {
+        this.loadLinks(linkId, evolvesTo[0].evolves_to);
+      }
+    }
+  }
+
+  loader(result: any) {
     this.count = result.count;
     this.next = result.next
     this.previous = result.previous
