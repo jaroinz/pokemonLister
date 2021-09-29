@@ -12,18 +12,18 @@
     </mat-expansion-panel-header>
     <div class="container" fxLayout="row">
       <div fxFlex="30%" *ngIf="pokemon['artUrl']">
-        <img [src]="pokemon['artUrl']" alt="{{pokemon['name'] + ' image'}}" height="150px">
+        <img [src]="pokemon['artUrl']" alt="{{pokemon['name'] + ' image'}}" class="current_pokemon" height="150px">
       </div>
       <div>
         <p>Possible evolutions for {{pokemon['name']}}</p>
-        <mat-accordion *ngIf="pokemon['evolutionChain']">
-          <mat-expansion-panel *ngFor="let chain of pokemon['evolutionChain']; let j=index" (opened)="viewChain(chain)">
+        <mat-accordion *ngIf="pokemon['evolutionLinks']">
+          <mat-expansion-panel *ngFor="let link of pokemon['evolutionLinks']; let j=index" (opened)="viewEvolved(link)">
             <mat-expansion-panel-header>
-              <h3>{{chain['name']}} <span *ngIf="chain['name']===pokemon['name']">(current state)</span></h3>
+              <h3>{{link['name']}} <span *ngIf="link['name']===pokemon['name']">(current state)</span></h3>
             </mat-expansion-panel-header>
-            <div *ngIf="chain['pokemon']">
-              <div *ngIf="chain['pokemon']['artUrl']">
-                <img [src]="chain['pokemon']['artUrl']" alt="{{chain['pokemon']['name'] + ' image'}}" height="100px">
+            <div *ngIf="link['pokemon']">
+              <div *ngIf="link['pokemon']['artUrl']">
+                <img [src]="link['pokemon']['artUrl']" alt="{{link['pokemon']['name'] + ' image'}}" class="evolved_pokemon" height="100px">
               </div>
             </div>
 
