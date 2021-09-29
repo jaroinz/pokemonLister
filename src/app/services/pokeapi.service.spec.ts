@@ -18,12 +18,4 @@ describe('PokemonService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('list of pokemon', done => {
-    const result$ = service.listPokemon(null, null);
-    result$.subscribe( result =>{
-      done();
-    })
-    }
-  );
-
 });

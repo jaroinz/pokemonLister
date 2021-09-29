@@ -15,7 +15,7 @@ export class PokeapiService {
 
   constructor(private http: HttpClient) { }
 
-  listPokemon(next: any, previous: any): Observable<any>
+  retrieveListPokemon(next: any, previous: any): Observable<any>
   {
     if (next) {
       return this.http.get(`${next}`);
@@ -26,17 +26,17 @@ export class PokeapiService {
     return this.http.get(`${this.apiURL}/pokemon`);
   }
 
-  viewPokemon(pokeId: string): Observable<any>
+  retrievePokemon(pokeId: string): Observable<any>
   {
     return this.http.get(`${this.apiURL}/pokemon/${pokeId}`);
   }
 
-  viewSpecies(speciesUrl: string): Observable<any>
+  retrieveSpecies(speciesUrl: string): Observable<any>
   {
     return this.http.get(`${speciesUrl}`);
   }
 
-  viewEvolution(evolutionUrl: string): Observable<any>
+  retrieveEvolution(evolutionUrl: string): Observable<any>
   {
     return this.http.get(`${evolutionUrl}`);
   }
