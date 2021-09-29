@@ -8,5 +8,5 @@ export class Pokemon {
   artUrl = '';
   speciesName = '';
   speciesUrl = '';
-  evolutionChain = [];
+  evolutionLinks = [];
 }

@@ -1,9 +1,9 @@
 import {Pokemon} from "./pokemon";
 
 /**
- * evolution chain
+ * evolution link
  */
-export class Chain {
+export class Link {
   name = '';
   url = '';
   pokemon = new Pokemon();
