@@ -1,14 +1,17 @@
 <div class="container" fxLayout="row">
-  <div fxFlex="33%" ><button [disabled]="!this.previous" mat-flat-button color="primary" (click)="previousPage()"> < previous </button></div>
-  <div fxFlex="33%" class="currentCounter">{{this.currentCount}} of: {{this.count}} records</div>
-  <div fxFlex="33%" ><button [disabled]="!this.next" mat-flat-button color="primary" (click)="nextPage()"> next > </button></div>
+  <div fxFlex="50%" ><button [disabled]="!this.previous" mat-flat-button color="primary" (click)="previousPage()"> < previous </button></div>
+<!--  <div fxFlex="33%" class="currentCounter">{{this.currentCount}} of: {{this.count}} records</div>-->
+  <div fxFlex="50%" ><button [disabled]="!this.next" mat-flat-button color="primary" (click)="nextPage()"> next > </button></div>
 </div>
 
 <mat-accordion>
   <mat-expansion-panel *ngFor="let pokemon of this.pokemonList; let i=index"
                        (opened)="viewDetails(pokemon['id'], i)">
     <mat-expansion-panel-header>
-      <h2>{{pokemon['name']}}</h2>
+      <div>
+        <img [src]="pokemon['artUrl']" alt="{{pokemon['name'] + ' image'}}" class="current_pokemon" height="50px">
+      </div>
+      <div>{{pokemon['name']}}</div>
     </mat-expansion-panel-header>
     <div class="container" fxLayout="row">
       <div fxFlex="30%" *ngIf="pokemon['artUrl']">

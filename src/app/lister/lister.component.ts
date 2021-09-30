@@ -168,7 +168,7 @@ export class ListerComponent implements OnInit {
     }
   }
 
-  loader(result: any) {
+  async loader(result: any) {
     this.count = result.count;
     this.next = result.next
     this.previous = result.previous
@@ -179,7 +179,27 @@ export class ListerComponent implements OnInit {
         if (tokens?.[6]) {
           pokemon.id = tokens[6];
         }
-        this.pokemonList.push(pokemon)
+
+        await this.pokeService.retrievePokemon(pokemon.id).toPromise().then(
+          result => {
+            if (result) {
+              pokemon.speciesUrl = result.species?.url;
+              pokemon.speciesName = result.species?.name;
+              pokemon.artUrl = result.sprites?.other?.dream_world?.front_default;
+            }
+          });
+        if (pokemon.speciesUrl) {
+          let evolvesFromSpecies = '';
+          await this.pokeService.retrieveSpecies(pokemon.speciesUrl).toPromise().then(
+            speciesResult => {
+              if (speciesResult) {
+                evolvesFromSpecies = speciesResult?.evolves_from_species;
+              }
+            });
+          if (evolvesFromSpecies === null) {
+            this.pokemonList.push(pokemon)
+          }
+        }
       }
     }
   }
