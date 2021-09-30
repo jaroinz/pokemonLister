@@ -124,11 +124,6 @@ export class ListerComponent implements OnInit {
       evolutionResult => {
         if (evolutionResult) {
           this.evolutionLinks[linkId] = [];
-          const link = new Link();
-          link.name = evolutionResult.chain?.species?.name;
-          link.url = evolutionResult.chain?.species?.url;
-          this.evolutionLinks[linkId].push(link);
-
           if (evolutionResult.chain?.evolves_to) {
             evolutionLinkEvolvesTo = evolutionResult.chain?.evolves_to;
           }
