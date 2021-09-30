@@ -1,25 +1,24 @@
-<div class="container" fxLayout="row">
-  <div fxFlex="50%" ><button [disabled]="!this.previous" mat-flat-button color="primary" (click)="previousPage()"> < previous </button></div>
-<!--  <div fxFlex="33%" class="currentCounter">{{this.currentCount}} of: {{this.count}} records</div>-->
-  <div fxFlex="50%" ><button [disabled]="!this.next" mat-flat-button color="primary" (click)="nextPage()"> next > </button></div>
+<div class="container_nav" >
+  <div ><button [disabled]="!this.previous" mat-flat-button color="primary" (click)="previousPage()"> < previous </button></div>
+  <div ><button [disabled]="!this.next" mat-flat-button color="primary" (click)="nextPage()"> next > </button></div>
 </div>
 
-<mat-accordion>
-  <mat-expansion-panel *ngFor="let pokemon of this.pokemonList; let i=index"
-                       (opened)="viewDetails(pokemon['id'], i)">
-    <mat-expansion-panel-header>
-      <div>
-        <img [src]="pokemon['artUrl']" alt="{{pokemon['name'] + ' image'}}" class="current_pokemon" height="50px">
-      </div>
+<div class="container_body">
+
+    <div class="pokemon_card"
+         *ngFor="let pokemon of this.pokemonList; let i=index"
+         (click)="viewDetails(pokemon['id'], i)">
+
       <div>{{pokemon['name']}}</div>
-    </mat-expansion-panel-header>
-    <div class="container" fxLayout="row">
-      <div fxFlex="30%" *ngIf="pokemon['artUrl']">
-        <img [src]="pokemon['artUrl']" alt="{{pokemon['name'] + ' image'}}" class="current_pokemon" height="150px">
+
+      <div *ngIf="pokemon['artUrl']">
+        <img [src]="pokemon['artUrl']" alt="{{pokemon['name'] + ' image'}}" class="current_pokemon">
       </div>
       <div>
-        <p>Possible evolutions for {{pokemon['name']}}</p>
+
+
         <mat-accordion *ngIf="pokemon['evolutionLinks']">
+          <p>Possible evolutions for {{pokemon['name']}}</p>
           <mat-expansion-panel *ngFor="let link of pokemon['evolutionLinks']; let j=index" (opened)="viewEvolved(link)">
             <mat-expansion-panel-header>
               <h3>{{link['name']}} <span *ngIf="link['name']===pokemon['name']">(current state)</span></h3>
@@ -33,6 +32,7 @@
           </mat-expansion-panel>
         </mat-accordion>
       </div>
+
     </div>
-  </mat-expansion-panel>
-</mat-accordion>
+
+</div>
