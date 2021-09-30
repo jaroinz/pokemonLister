@@ -64,19 +64,8 @@ export class ListerComponent implements OnInit {
 
   async viewDetails(pokeId: string, index: number) {
     const pokemonDetail = this.pokemonList[index];
-    await this.pokeService.retrievePokemon(pokeId).toPromise().then(
-      result => {
-        if (result) {
-          pokemonDetail.speciesUrl = result.species?.url;
-          pokemonDetail.speciesName = result.species?.name;
-          pokemonDetail.artUrl = result.sprites?.other?.dream_world?.front_default;
-        }
-      })
     if (pokemonDetail.speciesUrl) {
       await this.loadSpecies(pokemonDetail);
-    }
-    else {
-      console.log('no speciesUrl', pokemonDetail.speciesUrl);
     }
   }
 
