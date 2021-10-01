@@ -13,4 +13,5 @@ export class Pokemon {
   evolutionLinks : Link[] = [];
   hideParent = false;
   slideIndex = 1;
+  title = '';
 }

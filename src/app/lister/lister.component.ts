@@ -183,6 +183,7 @@ export class ListerComponent implements OnInit {
               pokemon.speciesName = result.species?.name;
               pokemon.artUrl = result.sprites?.other?.dream_world?.front_default;
               pokemon.slideIndex = 1;
+              pokemon.title = pokemon.speciesName;
             }
           });
         if (pokemon.speciesUrl) {
@@ -214,18 +215,22 @@ export class ListerComponent implements OnInit {
   }
 
   showSlides(n: number, index: number) {
-    let i;
-    let slides = this.pokemonList[index].evolutionLinks;
+    const currentPokemon = this.pokemonList[index];
+    const slides = currentPokemon.evolutionLinks;
 
-    if (n > slides.length) {this.pokemonList[index].slideIndex = 1}
+    if (n > slides.length) {
+      currentPokemon.slideIndex = 1
+    }
 
-    if (n < 1) {this.pokemonList[index].slideIndex = slides.length}
+    if (n < 1) {
+      currentPokemon.slideIndex = slides.length
+    }
 
-    for (i = 0; i < slides.length; i++) {
+    for (let i = 0; i < slides.length; i++) {
       slides[i].display = false;
     }
 
-    slides[this.pokemonList[index].slideIndex-1].display = true;
+    slides[currentPokemon.slideIndex-1].display = true;
 
   }
 

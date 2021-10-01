@@ -9,7 +9,7 @@
          *ngFor="let pokemon of this.pokemonList; let i=index"
          (click)="viewDetails(pokemon['id'], i)">
 
-      <div class="card_title">{{pokemon['name']}}</div>
+      <div class="card_title">{{pokemon.title}}</div>
 
       <ng-container *ngIf="!pokemon.hideParent">
         <img [src]="pokemon['artUrl']" alt="{{pokemon['name'] + ' image'}}"
@@ -20,7 +20,7 @@
         <div class="mySlides fade" [style.display]="link.display?'block':'none'"
              *ngFor="let link of pokemon['evolutionLinks']; let j=index">
           <div class="text" *ngIf="pokemon.name === link.name">initial pokemon</div>
-          <div class="text" *ngIf="pokemon.name !== link.name">evolves to {{link['name']}}</div>
+          <div class="text" *ngIf="pokemon.name !== link.name">evolved to {{link['name']}}</div>
           <img [style.display]="link.display?'block':'none'"
                [src]="link['pokemon']['artUrl']"
                alt="{{link['pokemon']['name'] + ' image'}}"
@@ -34,7 +34,7 @@
 
       <!-- The dots/circles -->
       <div style="text-align:center">
-        <span class="dot" (click)="currentSlide(j+1, i)"
+        <span [class]="link.display?'dot active':'dot'" (click)="currentSlide(j+1, i)"
               *ngFor="let link of pokemon['evolutionLinks']; let j=index">
         </span>
       </div>
