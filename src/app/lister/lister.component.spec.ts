@@ -15,6 +15,7 @@ describe('ListerComponent', () => {
   const POKEMON_URL = "https://pokeapi.co/api/v2/pokemon/1/";
   const ART_URL = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/2.svg";
   const EVOLUTION_URL = "https://pokeapi.co/api/v2/evolution-chain/1/";
+  const EVOLUTION_URL_FAKE = "https://pokeapi.co/api/v2evolution-chain1";
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -34,23 +35,6 @@ describe('ListerComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should render initial current counter', () => {
-    const fixture = TestBed.createComponent(ListerComponent);
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('div .currentCounter')?.textContent).toContain('0 of: 0 records');
-  });
-
-  it('should render 20 of 40', () => {
-    const fixture = TestBed.createComponent(ListerComponent);
-    component = fixture.componentInstance;
-    component.currentCount = 20;
-    component.count = 40;
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('div .currentCounter')?.textContent).toContain('20 of: 40 records');
-  });
-
   it('should call ngOnInit and get response as empty array', fakeAsync(() => {
     const fixture = TestBed.createComponent(ListerComponent);
     const component = fixture.debugElement.componentInstance;
@@ -63,55 +47,33 @@ describe('ListerComponent', () => {
     expect(component.pokemonList).toEqual([]);
   }))
 
-  it('should call ngOnInit and get 1 element and currentCount as OFFSET value ', fakeAsync(() => {
-    const fixture = TestBed.createComponent(ListerComponent);
-    const component = fixture.debugElement.componentInstance;
-    const service = fixture.debugElement.injector.get(PokeapiService);
-    spyOn(service,"retrieveListPokemon").and.callFake(() => {
-      return of({"results": [{"name": "bulbasaur", "url": "https://pokeapi.co/api/v2/pokemon/1/"}]})
-        .pipe(delay(100));
-    });
-    component.ngOnInit();
-    tick(100);
-    expect(component.pokemonList).toHaveSize(1);
-    expect(component.currentCount).toEqual(component.OFFSET);
-  }))
 
-  it('should call viewDetails with no species URL', fakeAsync(() => {
-    const fixture = TestBed.createComponent(ListerComponent);
-    const component = fixture.debugElement.componentInstance;
-
-    spyOn(PokeapiService.prototype,"retrievePokemon").and.callFake(() => {
-      return of(
-        {"species": { "name": POKEMON_NAME },
-                  "sprites": {"other": {"dream_world":
-                        {"front_default": ART_URL}}}}).pipe(delay(100));
-    });
-
-    const pokemon = new Pokemon();
-    component.pokemonList.push(pokemon);
-    component.viewDetails('1', 0);
-    tick(100);
-    expect(pokemon.artUrl).toBe(ART_URL);
-  }))
-
-  it('should call loadSpecies with this.evolutionLinks already loaded', fakeAsync(() => {
+  it('should call viewDetails and expect: pokemon evolution links get set and set display as true'
+    , fakeAsync(() => {
     const fixture = TestBed.createComponent(ListerComponent);
     const component = fixture.debugElement.componentInstance;
 
     spyOn(PokeapiService.prototype,"retrieveSpecies").and.callFake(() => {
-      return of({"evolution_chain": {"url": EVOLUTION_URL}})
-        .pipe(delay(100));
+      return of({"evolution_chain": {"url": EVOLUTION_URL}}).pipe(delay(100));
     });
 
-    const pokemonDetail = new Pokemon();
-    pokemonDetail.speciesUrl = "https://pokeapi.co/api/v2/pokemon-species/1/";
-
+    component.evolutionLinks['1'] = [];
     const link = new Link();
-    component.evolutionLinks[ 1 ] = link;
-    component.loadSpecies(pokemonDetail);
+    link.name = 'LINK_DEMO_NAME'
+    link.pokemon = new Pokemon();
+    link.pokemon.artUrl = ART_URL;
+    link.display = false;
+    component.evolutionLinks['1'].push(link);
+
+    const pokemon = new Pokemon();
+    pokemon.evolutionLinks = component.evolutionLinks['1'];
+    component.pokemonList.push(pokemon);
+
+    expect(pokemon.evolutionLinks[0].display).toBe(false);
+    component.viewDetails('1', 0);
     tick(100);
-    expect(pokemonDetail.evolutionLinks).toBe(component.evolutionLinks[ 1 ]);
+    expect(pokemon.evolutionLinks).toBe(component.evolutionLinks['1']);
+    expect(pokemon.evolutionLinks[0].display).toBe(true);
   }))
 
   it('should call loadEvolution and pokemonDetail should contain all evolution links', fakeAsync(() => {
