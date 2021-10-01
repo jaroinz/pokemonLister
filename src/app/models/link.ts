@@ -7,4 +7,5 @@ export class Link {
   name = '';
   url = '';
   pokemon = new Pokemon();
+  display = true;
 }

@@ -66,6 +66,13 @@ export class ListerComponent implements OnInit {
     const pokemonDetail = this.pokemonList[index];
     if (pokemonDetail.speciesUrl) {
       await this.loadSpecies(pokemonDetail);
+      pokemonDetail.hideParent = true;
+      if (pokemonDetail.evolutionLinks) {
+        for (const link of pokemonDetail.evolutionLinks) {
+          await this.viewEvolved(link);
+        }
+        this.showSlides(1, index);
+      }
     }
   }
 
@@ -124,6 +131,11 @@ export class ListerComponent implements OnInit {
       evolutionResult => {
         if (evolutionResult) {
           this.evolutionLinks[linkId] = [];
+          const link = new Link();
+          link.name = evolutionResult.chain?.species?.name;
+          link.url = evolutionResult.chain?.species?.url;
+          this.evolutionLinks[linkId].push(link);
+
           if (evolutionResult.chain?.evolves_to) {
             evolutionLinkEvolvesTo = evolutionResult.chain?.evolves_to;
           }
@@ -170,6 +182,7 @@ export class ListerComponent implements OnInit {
               pokemon.speciesUrl = result.species?.url;
               pokemon.speciesName = result.species?.name;
               pokemon.artUrl = result.sprites?.other?.dream_world?.front_default;
+              pokemon.slideIndex = 1;
             }
           });
         if (pokemon.speciesUrl) {
@@ -187,4 +200,33 @@ export class ListerComponent implements OnInit {
       }
     }
   }
+
+  /* slider navigation */
+
+  // Next/previous controls
+  plusSlides(n : number, index: number) {
+    this.showSlides(this.pokemonList[index].slideIndex += n, index);
+  }
+
+// Thumbnail image controls
+  currentSlide(n: number, index: number) {
+    this.showSlides(this.pokemonList[index].slideIndex = n, index);
+  }
+
+  showSlides(n: number, index: number) {
+    let i;
+    let slides = this.pokemonList[index].evolutionLinks;
+
+    if (n > slides.length) {this.pokemonList[index].slideIndex = 1}
+
+    if (n < 1) {this.pokemonList[index].slideIndex = slides.length}
+
+    for (i = 0; i < slides.length; i++) {
+      slides[i].display = false;
+    }
+
+    slides[this.pokemonList[index].slideIndex-1].display = true;
+
+  }
+
 }

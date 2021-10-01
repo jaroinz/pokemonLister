@@ -1,6 +1,6 @@
 <div class="container_nav" >
-  <div ><button [disabled]="!this.previous" mat-flat-button color="primary" (click)="previousPage()"> < previous </button></div>
-  <div ><button [disabled]="!this.next" mat-flat-button color="primary" (click)="nextPage()"> next > </button></div>
+  <div ><button class="button_nav" [disabled]="!this.previous" (click)="previousPage()"> < previous </button></div>
+  <div ><button class="button_nav" [disabled]="!this.next" (click)="nextPage()"> next > </button></div>
 </div>
 
 <div class="container_body">
@@ -9,28 +9,29 @@
          *ngFor="let pokemon of this.pokemonList; let i=index"
          (click)="viewDetails(pokemon['id'], i)">
 
-      <div>{{pokemon['name']}}</div>
+      <ng-container *ngIf="!pokemon.hideParent">
+        <div class="card_title">{{pokemon['name']}}</div>
 
-      <div *ngIf="pokemon['artUrl']">
-        <img [src]="pokemon['artUrl']" alt="{{pokemon['name'] + ' image'}}" class="current_pokemon">
+        <div *ngIf="pokemon['artUrl']">
+          <img [src]="pokemon['artUrl']" alt="{{pokemon['name'] + ' image'}}" class="current_pokemon">
+        </div>
+      </ng-container>
+
+      <div class="slideshow-container" *ngIf="pokemon.hideParent">
+        <div class="mySlides fade" [style.display]="link.display?'block':'none'" *ngFor="let link of pokemon['evolutionLinks']; let j=index">
+          <div class="card_title text">{{link['name']}}</div>
+          <div [style.display]="link.display?'block':'none'" *ngIf="link['pokemon'] && link['pokemon']['artUrl']">
+            <img [src]="link['pokemon']['artUrl']" alt="{{link['pokemon']['name'] + ' image'}}" class="evolved_pokemon">
+          </div>
+        </div>
+        <!-- Next and previous buttons -->
+        <a class="prev" (click)="plusSlides(-1, i)">&#10094;</a>
+        <a class="next" (click)="plusSlides(1, i)">&#10095;</a>
       </div>
-      <div>
 
-
-        <mat-accordion *ngIf="pokemon['evolutionLinks']">
-          <p>Possible evolutions for {{pokemon['name']}}</p>
-          <mat-expansion-panel *ngFor="let link of pokemon['evolutionLinks']; let j=index" (opened)="viewEvolved(link)">
-            <mat-expansion-panel-header>
-              <h3>{{link['name']}} <span *ngIf="link['name']===pokemon['name']">(current state)</span></h3>
-            </mat-expansion-panel-header>
-            <div *ngIf="link['pokemon']">
-              <div *ngIf="link['pokemon']['artUrl']">
-                <img [src]="link['pokemon']['artUrl']" alt="{{link['pokemon']['name'] + ' image'}}" class="evolved_pokemon" height="100px">
-              </div>
-            </div>
-
-          </mat-expansion-panel>
-        </mat-accordion>
+      <!-- The dots/circles -->
+      <div style="text-align:center">
+        <span class="dot" (click)="currentSlide(j+1, i)" *ngFor="let link of pokemon['evolutionLinks']; let j=index"></span>
       </div>
 
     </div>

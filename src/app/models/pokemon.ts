@@ -1,6 +1,8 @@
 /**
  * identifies some pokemon's details
  */
+import {Link} from "./link";
+
 export class Pokemon {
   id = '';
   name = '';
@@ -8,5 +10,7 @@ export class Pokemon {
   artUrl = '';
   speciesName = '';
   speciesUrl = '';
-  evolutionLinks = [];
+  evolutionLinks : Link[] = [];
+  hideParent = false;
+  slideIndex = 1;
 }
