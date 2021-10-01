@@ -1,6 +1,6 @@
 <div class="container_nav" >
-  <div ><button class="button_nav" [disabled]="!this.previous" (click)="previousPage()"> < previous </button></div>
-  <div ><button class="button_nav" [disabled]="!this.next" (click)="nextPage()"> next > </button></div>
+  <div ><button class="button_nav" [disabled]="!this.previous" (click)="previousPage()"> &#10094; </button></div>
+  <div ><button class="button_nav" [disabled]="!this.next" (click)="nextPage()"> &#10095; </button></div>
 </div>
 
 <div class="container_body">
@@ -9,20 +9,23 @@
          *ngFor="let pokemon of this.pokemonList; let i=index"
          (click)="viewDetails(pokemon['id'], i)">
 
-      <ng-container *ngIf="!pokemon.hideParent">
-        <div class="card_title">{{pokemon['name']}}</div>
+      <div class="card_title">{{pokemon['name']}}</div>
 
-        <div *ngIf="pokemon['artUrl']">
-          <img [src]="pokemon['artUrl']" alt="{{pokemon['name'] + ' image'}}" class="current_pokemon">
-        </div>
+      <ng-container *ngIf="!pokemon.hideParent">
+        <img [src]="pokemon['artUrl']" alt="{{pokemon['name'] + ' image'}}"
+             class="current_pokemon">
       </ng-container>
 
       <div class="slideshow-container" *ngIf="pokemon.hideParent">
-        <div class="mySlides fade" [style.display]="link.display?'block':'none'" *ngFor="let link of pokemon['evolutionLinks']; let j=index">
-          <div class="card_title text">{{link['name']}}</div>
-          <div [style.display]="link.display?'block':'none'" *ngIf="link['pokemon'] && link['pokemon']['artUrl']">
-            <img [src]="link['pokemon']['artUrl']" alt="{{link['pokemon']['name'] + ' image'}}" class="evolved_pokemon">
-          </div>
+        <div class="mySlides fade" [style.display]="link.display?'block':'none'"
+             *ngFor="let link of pokemon['evolutionLinks']; let j=index">
+          <div class="text" *ngIf="pokemon.name === link.name">initial pokemon</div>
+          <div class="text" *ngIf="pokemon.name !== link.name">evolves to {{link['name']}}</div>
+          <img [style.display]="link.display?'block':'none'"
+               [src]="link['pokemon']['artUrl']"
+               alt="{{link['pokemon']['name'] + ' image'}}"
+               class="evolved_pokemon">
+
         </div>
         <!-- Next and previous buttons -->
         <a class="prev" (click)="plusSlides(-1, i)">&#10094;</a>
@@ -31,7 +34,9 @@
 
       <!-- The dots/circles -->
       <div style="text-align:center">
-        <span class="dot" (click)="currentSlide(j+1, i)" *ngFor="let link of pokemon['evolutionLinks']; let j=index"></span>
+        <span class="dot" (click)="currentSlide(j+1, i)"
+              *ngFor="let link of pokemon['evolutionLinks']; let j=index">
+        </span>
       </div>
 
     </div>
