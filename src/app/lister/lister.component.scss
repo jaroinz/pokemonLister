@@ -1,10 +1,12 @@
+@import '_colors.scss';
+
 .container_nav {
   display: flex;
   justify-content: space-around;
   align-items: center;
   position: fixed;
   top: 0%;
-  background: #2b2b2b;
+  background: $color_black;
   width: 100%;
   height: 60px;
 }
@@ -16,7 +18,7 @@
   padding: 8px;
   margin-top: 60px;
   justify-content: center;
-  background: #555a5b;
+  background: $color_secondary;
 }
 
 .pokemon_card {
@@ -25,7 +27,7 @@
   border-radius: 10px;
   padding: 10px 5px 5px 5px;
   width: auto;
-  background: #6c7777;
+  background: $color_third;
 }
 
 .pokemon_card:hover {
@@ -45,24 +47,24 @@
 }
 
 .card_title {
-  color: whitesmoke;
+  color: $color_primary;
   width: 100%;
   text-align: center;
   padding: 0 0 10px;
 }
 
 .button_nav {
-  background: #2b2b2b;
+  background: $color_black;
   border: 0;
   padding: 10px;
   border-radius: 1px;
-  color: white;
+  color: $color_white;
   font-weight: bold;
   font-size: 18px;
 }
 
 .button_nav:disabled {
-  color: gray;
+  color: $color_gray;
 }
 
 /*---copied from w3schools--*/
@@ -89,7 +91,7 @@
   width: auto;
   margin-top: -22px;
   padding: 16px 10px;
-  color: white;
+  color: $color_white;
   font-weight: bold;
   font-size: 18px;
   transition: 0.6s ease;
@@ -105,12 +107,12 @@
 
 /* On hover, add a black background color with a little bit see-through */
 .prev:hover, .next:hover {
-  background-color: rgba(0,0,0,0.8);
+  background-color: $color_black;
 }
 
 /* Caption text */
 .text {
-  color: #f2f2f2;
+  color: $color_primary;
   font-size: 15px;
   /*padding: 8px 12px;*/
   position: absolute;
@@ -121,7 +123,7 @@
 
 /* Number text (1/3 etc) */
 .numbertext {
-  color: #f2f2f2;
+  color: $color_primary;
   font-size: 12px;
   padding: 8px 12px;
   position: absolute;
@@ -134,14 +136,14 @@
   height: 15px;
   width: 15px;
   margin: 0 2px;
-  background-color: #bbb;
+  background-color: $color_secondary;
   border-radius: 50%;
   display: inline-block;
   transition: background-color 0.6s ease;
 }
 
 .active, .dot:hover {
-  background-color: #717171;
+  background-color: $color_gray;
 }
 
 /* Fading animation */

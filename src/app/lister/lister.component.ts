@@ -6,7 +6,7 @@ import {Link} from "../models/link";
 @Component({
   selector: 'app-lister',
   templateUrl: './lister.component.html',
-  styleUrls: ['./lister.component.css']
+  styleUrls: ['./lister.component.scss']
 })
 export class ListerComponent implements OnInit {
 
